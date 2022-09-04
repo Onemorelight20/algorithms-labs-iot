@@ -86,44 +86,50 @@ class RedBlackTree:
         while x != self.root and x.color == BLACK:
             if x == x.parent.left:
                 sibling = x.parent.right
+                # case 1: sibling is red -> it`s children are black
                 if sibling.color == RED:
                     sibling.color = BLACK
                     x.parent.color = RED
                     self.__left_rotate(x.parent)
                     sibling = x.parent.right
+                # case 4: sibling is black, and it`s children are black too
                 if sibling.left.color == BLACK and sibling.right.color == BLACK:
                     sibling.color = RED
                     x = x.parent
                 else:
+                    # case 3: x is black, sibling is black, sibling`s right child is black
                     if sibling.right.color == BLACK:
                         sibling.left.color = BLACK
                         sibling.color = RED
                         self.__right_rotate(sibling)
                         sibling = x.parent.right
-
+                    # case 2: x is black, sibling is black, sibling`s right child is red
                     sibling.color = x.parent.color
                     x.parent.color = BLACK
-                    sibling.right.color = RED
+                    sibling.right.color = BLACK
                     self.__left_rotate(x.parent)
                     x = self.root
+            # if the x is parent`s right child
             else:
                 sibling = x.parent.left
+                # case 1: sibling is red -> it`s children are black
                 if sibling.color == RED:
                     sibling.color = BLACK
                     x.parent.color = RED
                     self.__right_rotate(x.parent)
                     sibling = x.parent.left
-
+                # case 4: sibling is black, and it`s children are black too
                 if sibling.right.color == BLACK and sibling.right.color == BLACK:
                     sibling.color = RED
                     x = x.parent
                 else:
+                    # case 3: x is black, sibling is black, sibling`s left child is black
                     if sibling.left.color == BLACK:
                         sibling.right.color = BLACK
                         sibling.color = RED
                         self.__left_rotate(sibling)
                         sibling = x.parent.left
-
+                    # case 2: x is black, sibling is black, sibling`s left child is red
                     sibling.color = x.parent.color
                     x.parent.color = BLACK
                     sibling.left.color = BLACK
