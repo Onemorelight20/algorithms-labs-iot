@@ -27,7 +27,6 @@ class AVLTree:
             node.left = self.__insert_processing(node.left, key)
         else:
             node.right = self.__insert_processing(node.right, key)
-
         node.height = 1 + max(self.__get_height(node.left), self.__get_height(node.right))
 
         return self.__rebalanced_if_needed(node, key)
@@ -48,27 +47,31 @@ class AVLTree:
 
         return node
 
-    def __left_rotate(self, a):
-        b = a.right
-        T2 = b.left
+    def __left_rotate(self, node_to_rotate):
+        right_child_of_rotated_node = node_to_rotate.right
+        node_to_change_parent = right_child_of_rotated_node.left
 
-        b.left = a
-        a.right = T2
+        right_child_of_rotated_node.left = node_to_rotate
+        node_to_rotate.right = node_to_change_parent
 
-        a.height = 1 + max(self.__get_height(a.left), self.__get_height(a.right))
-        b.height = 1 + max(self.__get_height(b.left), self.__get_height(b.right))
-        return b
+        node_to_rotate.height = 1 + max(self.__get_height(node_to_rotate.left),
+                                        self.__get_height(node_to_rotate.right))
+        right_child_of_rotated_node.height = 1 + max(self.__get_height(right_child_of_rotated_node.left),
+                                                     self.__get_height(right_child_of_rotated_node.right))
+        return right_child_of_rotated_node
 
-    def __right_rotate(self, b):
-        a = b.left
-        T2 = a.right
+    def __right_rotate(self, node_to_rotate):
+        left_child_of_rotated_node = node_to_rotate.left
+        node_to_change_parent = left_child_of_rotated_node.right
 
-        a.right = b
-        b.left = T2
+        left_child_of_rotated_node.right = node_to_rotate
+        node_to_rotate.left = node_to_change_parent
 
-        b.height = 1 + max(self.__get_height(b.left), self.__get_height(b.right))
-        a.height = 1 + max(self.__get_height(a.left), self.__get_height(a.right))
-        return a
+        node_to_rotate.height = max(self.__get_height(node_to_rotate.left),
+                                    self.__get_height(node_to_rotate.right))
+        left_child_of_rotated_node.height = max(self.__get_height(left_child_of_rotated_node.left),
+                                                self.__get_height(left_child_of_rotated_node.right))
+        return left_child_of_rotated_node
 
     def __get_balance_factor(self, node):
         if not node:
@@ -86,6 +89,6 @@ class AVLTree:
         if not node:
             return
 
-        print("{0} ".format(node.value), end="")
+        print(f"{node.value} BalanceFactor is {self.__get_balance_factor(node)} |||||", end="")
         self.__preorder_print_helper(node.left)
         self.__preorder_print_helper(node.right)

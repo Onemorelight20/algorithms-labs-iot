@@ -48,6 +48,6 @@ def show_avl_tree_insertion2():
 
 
 if __name__ == "__main__":
-    # show_avl_tree_insertion1()
-    # show_avl_tree_insertion2()
+    show_avl_tree_insertion1()
+    show_avl_tree_insertion2()
     show_rb_tree_deletion()
