@@ -66,6 +66,7 @@ def write_result_to_file(filename: str, data: list, path: list):
     if path == -1:
         with open(filename, 'w') as file:
             file.write(str(-1))
+            return
 
     path = set(path)
     with open(filename, 'w') as file:

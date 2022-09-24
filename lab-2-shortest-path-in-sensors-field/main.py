@@ -7,7 +7,7 @@ if __name__ == '__main__':
     adjecency_list = utills.get_adjecency_list(file_content)
 
     graph = Graph(adjecency_list)
-    path = graph.bfs(Vertex(2,0), Vertex(0,9))
+    path = graph.bfs(Vertex(2,0), Vertex(2,9))
     if path != -1:
         print(len(path))
     print(path)
