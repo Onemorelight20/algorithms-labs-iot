@@ -26,11 +26,8 @@ def get_2d_list_element_neighbours(vertex: Vertex, data: list):
 
 
 def is_reachable(vertex: Vertex, data: list):
-    if data[vertex.idx_row][vertex.idx_column] == 0:
+    if data[vertex.idx_row][vertex.idx_column] == 0 or get_2d_list_element_neighbours(vertex, data).count(0) > 0:
         return False
-    else:
-        if get_2d_list_element_neighbours(vertex, data).count(0) > 0:
-            return False
     return True
 
 
@@ -38,13 +35,13 @@ def get_available_neighbours(vertex: Vertex, data: list):
     max_row_idx = len(data) - 1
     max_column_idx = len(data[vertex.idx_row]) - 1
     available_neighbours = []
-    neighbours_indexes = (
+    neighbours_available_to_reach_indexes = (
         (max(0, vertex.idx_row - 1), vertex.idx_column),
         (vertex.idx_row, min(max_column_idx, vertex.idx_column + 1)),
         (min(max_row_idx, vertex.idx_row + 1), vertex.idx_column),
         (vertex.idx_row, max(0, vertex.idx_column - 1))
     )
-    for idx_row, idx_column in neighbours_indexes:
+    for idx_row, idx_column in neighbours_available_to_reach_indexes:
         cur_vertex = Vertex(idx_row, idx_column)
         if is_reachable(cur_vertex, data) and not cur_vertex == vertex and available_neighbours.count(cur_vertex) == 0:
             available_neighbours.append(cur_vertex)
@@ -75,6 +72,8 @@ def write_result_to_file(filename: str, data: list, path: list):
             for j, el in enumerate(row):
                 if Vertex(i, j) in path:
                     file.write('+')
+                elif not is_reachable(Vertex(i, j), data):
+                    file.write('0')
                 else:
                     file.write(str(el))
             file.write('\n')

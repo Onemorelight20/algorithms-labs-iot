@@ -34,7 +34,7 @@ class Graph:
                     queue.put(vertex_neighbour)
 
         # shortest path from source node to any node
-        if required_vertex not in parent_of_vertex:
+        if required_vertex not in parent_of_vertex or parent_of_vertex[required_vertex] is None:
             return -1
 
         path = []
