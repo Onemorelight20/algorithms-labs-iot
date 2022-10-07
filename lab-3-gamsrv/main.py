@@ -11,12 +11,12 @@ def print_adjecency_list(adjecency_list: dict):
 
 
 if __name__ == '__main__':
-    adjecency_list, routers_verticies, clients_vertices = FileUtils.get_adjacency_list_from_file()
+    adjecency_list, routers_vertices, clients_vertices = FileUtils.get_adjacency_list_from_file()
     print_adjecency_list(adjecency_list)
 
-    LONGEST_DISTANCE_FROM_START = sys.maxsize
+    optimal_longest_retention_from_server = sys.maxsize
 
-    for router_vertex_index in routers_verticies:
+    for router_vertex_index in routers_vertices:
         server_vertex = Vertex(VertexType.ROUTER, router_vertex_index)
         distances_from_start = Graph.dijkstra_algorithm(adjecency_list, server_vertex, clients_vertices)
 
@@ -24,8 +24,8 @@ if __name__ == '__main__':
         for vertex, distance in distances_from_start.items():
             if vertex.role is VertexType.CLIENT and distance > longest_retention_for_router:
                 longest_retention_for_router = distance
-        if longest_retention_for_router < LONGEST_DISTANCE_FROM_START:
-            LONGEST_DISTANCE_FROM_START = longest_retention_for_router
+        if longest_retention_for_router < optimal_longest_retention_from_server:
+            optimal_longest_retention_from_server = longest_retention_for_router
 
-    print('Result is', LONGEST_DISTANCE_FROM_START)
-    FileUtils.write_to_file(LONGEST_DISTANCE_FROM_START)
+    print('Result is', optimal_longest_retention_from_server)
+    FileUtils.write_to_file(optimal_longest_retention_from_server)
