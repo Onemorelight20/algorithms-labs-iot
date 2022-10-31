@@ -12,4 +12,4 @@ class FileUtils:
     @staticmethod
     def save_result(content: str, file_name: str = "wchain.out"):
         with open(file_name, "w") as file:
-            file.write(str(content))
+            file.write(content)
