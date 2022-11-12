@@ -1,3 +1,20 @@
+from functools import wraps
+import time
+
+
+def timeit(func):
+    @wraps(func)
+    def timeit_wrapper(*args, **kwargs):
+        start_time = time.perf_counter()
+        result = func(*args, **kwargs)
+        end_time = time.perf_counter()
+        total_time = end_time - start_time
+        print(f'Function {func.__name__}{args} {kwargs} Took {total_time:.10f} seconds')
+        return result
+    return timeit_wrapper
+
+
+# O(n) for building fail table
 def fail_table(pattern):
     result = [None]
 
@@ -24,7 +41,10 @@ def fail_table(pattern):
 # update the length of the match we've made.  On a failure, we update these
 # values by trying to preserve the maximum proper border of the string we were
 # able to manage by that point.
-def knuth_morris_pratt_str_match(pattern, string):
+# O(m) for finding pattern match, where m is the length of text
+# together O(m + n)
+@timeit
+def knuth_morris_pratt_str_match(pattern, text):
     # Compute the failure table for the pattern we're looking up.
     fail = fail_table(pattern)
 
@@ -35,19 +55,17 @@ def knuth_morris_pratt_str_match(pattern, string):
     match = 0
 
     # Loop until we fall off the string or match.
-    while index + match < len(string):
+    while index + match < len(text):
 
-        # If the current character matches the expected character, then bump up
-        # the match index.
-        if string[index + match] == pattern[match]:
+        # If the current character matches the expected character, then increment the match index.
+        if text[index + match] == pattern[match]:
             match = match + 1
 
             # If we completely matched everything, we're done.
             if match == len(pattern):
                 return index
 
-        # Otherwise, we need to look at the fail table to determine what to do
-        # next.
+        # Otherwise, we need to look at the fail table to determine what to do next.
         else:
             # If we couldn't match the first character, then just advance the
             # start index.  We need to try again.
@@ -65,5 +83,5 @@ def knuth_morris_pratt_str_match(pattern, string):
 
 
 if __name__ == '__main__':
-    res = knuth_morris_pratt_str_match("aoa", "ooooooooaaaaoooaoa")
-    print(res)
+    res1 = knuth_morris_pratt_str_match("aoa", "ooooooooaaaaoooaoa")
+    print("res1 match index is", res1)
