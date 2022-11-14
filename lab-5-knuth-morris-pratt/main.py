@@ -2,6 +2,11 @@ from functools import wraps
 import time
 
 
+def read_file(file_name: str):
+    with open(file_name, mode='r') as opened_file:
+        return opened_file.read()
+
+
 def timeit(func):
     @wraps(func)
     def timeit_wrapper(*args, **kwargs):
@@ -9,12 +14,15 @@ def timeit(func):
         result = func(*args, **kwargs)
         end_time = time.perf_counter()
         total_time = end_time - start_time
-        print(f'Function {func.__name__}{args} {kwargs} Took {total_time:.10f} seconds')
+        max_len = 50
+        args = tuple(f"{str(arg[:max_len]) + '...' if len(arg) >= max_len else arg}" for arg in args)
+        print(f'Function {func.__name__}{args} {kwargs} took {total_time:.10f} seconds')
         return result
+
     return timeit_wrapper
 
 
-# O(n) for building fail table
+# Complexity: O(n) for building fail table
 def fail_table(pattern):
     result = [None]
 
@@ -35,13 +43,13 @@ def fail_table(pattern):
     return result
 
 
-# We compute the failure table, which
-# is done above.  Next, we iterate across the string, keeping track of a
+# Firstly we create the failure table, which is done above.
+# Next, we iterate across the string, keeping track of a
 # candidate start point and length matched so far.  Whenever a match occurs, we
 # update the length of the match we've made.  On a failure, we update these
 # values by trying to preserve the maximum proper border of the string we were
 # able to manage by that point.
-# O(m) for finding pattern match, where m is the length of text
+# Complexity: O(m) for finding pattern match, where m is the length of text
 # together O(m + n)
 @timeit
 def knuth_morris_pratt_str_match(pattern, text):
@@ -72,16 +80,23 @@ def knuth_morris_pratt_str_match(pattern, text):
             if match == 0:
                 index = index + 1
 
-            # Otherwise, see how much we need to skip forward before we have
-            # another feasible match.
+            # Otherwise, see how much we need to skip forward before we havevanother feasible match.
             else:
                 index = index + match - fail[match]
                 match = fail[match]
 
-    # If we made it here, then no match was found.
     return -1
 
 
 if __name__ == '__main__':
-    res1 = knuth_morris_pratt_str_match("aoa", "ooooooooaaaaoooaoa")
-    print("res1 match index is", res1)
+    # best case comparing with naive approach
+    res1 = knuth_morris_pratt_str_match("aaaaaaaaaaaaaaaaaaaaaaaa", read_file("best-case.txt"))
+    print(f"res1 match index is {res1}")
+
+    # average case
+    res2 = knuth_morris_pratt_str_match("aaaaaaaaaaabaaaaaaaaaaaa", read_file("average-case.txt"))
+    print(f"res2 match index is {res2}")
+
+    # worst case (all cases are O(m+n))
+    res3 = knuth_morris_pratt_str_match("aaabaaacaaabaaacaaabaaac", read_file("worst-case.txt"))
+    print(f"res3 match index is {res3}")
