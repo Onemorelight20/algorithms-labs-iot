@@ -10,13 +10,13 @@ def read_file(file_name: str):
 def timeit(func):
     @wraps(func)
     def timeit_wrapper(*args, **kwargs):
+        max_arg_len = 50
         start_time = time.perf_counter()
         result = func(*args, **kwargs)
         end_time = time.perf_counter()
         total_time = end_time - start_time
-        max_len = 50
-        args = tuple(f"{str(arg[:max_len]) + '...' if len(arg) >= max_len else arg}" for arg in args)
-        print(f'Function {func.__name__}{args} {kwargs} took {total_time:.10f} seconds')
+        args_optimized = tuple(f"{str(arg[:max_arg_len]) + '...' if len(arg) >= max_arg_len else arg}" for arg in args)
+        print(f'Function {func.__name__}{args_optimized} {kwargs} took {total_time:.10f} seconds')
         return result
 
     return timeit_wrapper
@@ -90,13 +90,14 @@ def knuth_morris_pratt_str_match(pattern, text):
 
 if __name__ == '__main__':
     # best case comparing with naive approach
-    res1 = knuth_morris_pratt_str_match("aaaaaaaaaaaaaaaaaaaaaaaa", read_file("best-case.txt"))
+    res1 = knuth_morris_pratt_str_match("aaaaaaaaaaabaaaaaaaaaaaa", read_file("case1.txt"))
     print(f"res1 match index is {res1}")
 
     # average case
-    res2 = knuth_morris_pratt_str_match("aaaaaaaaaaabaaaaaaaaaaaa", read_file("average-case.txt"))
+    res2 = knuth_morris_pratt_str_match("aaabaaacaaabaaacaaabaaac", read_file("case2.txt"))
     print(f"res2 match index is {res2}")
 
     # worst case (all cases are O(m+n))
-    res3 = knuth_morris_pratt_str_match("aaabaaacaaabaaacaaabaaac", read_file("worst-case.txt"))
+    res3 = knuth_morris_pratt_str_match("aaaaaaaaaaaaaaaaaaaaaaaa", read_file("case3.txt"))
     print(f"res3 match index is {res3}")
+
