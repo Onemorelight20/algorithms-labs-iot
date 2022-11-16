@@ -23,7 +23,7 @@ def timeit(func):
 
 
 # Complexity: O(n) for building fail table
-def fail_table(pattern):
+def create_prefix_table(pattern):
     result = [None]
 
     for i in range(len(pattern)):
@@ -50,11 +50,10 @@ def fail_table(pattern):
 # values by trying to preserve the maximum proper border of the string we were
 # able to manage by that point.
 # Complexity: O(m) for finding pattern match, where m is the length of text
-# together O(m + n)
+# together O(m + n), where m is the length of the text, and n is the length of the pattern
 @timeit
 def knuth_morris_pratt_str_match(pattern, text):
-    # Compute the failure table for the pattern we're looking up.
-    fail = fail_table(pattern)
+    lps_table = create_prefix_table(pattern)
 
     # Keep track of the start index and next match position, both of which
     # start at zero since our candidate match is at the beginning and is trying
@@ -75,15 +74,13 @@ def knuth_morris_pratt_str_match(pattern, text):
 
         # Otherwise, we need to look at the fail table to determine what to do next.
         else:
-            # If we couldn't match the first character, then just advance the
-            # start index.  We need to try again.
+            # If we couldn't match the first character, then just advance the start index.
             if match == 0:
                 index = index + 1
-
-            # Otherwise, see how much we need to skip forward before we havevanother feasible match.
+            # Otherwise, see how much we need to skip forward before we have another possible match.
             else:
-                index = index + match - fail[match]
-                match = fail[match]
+                index = index + match - lps_table[match]
+                match = lps_table[match]
 
     return -1
 
@@ -98,6 +95,6 @@ if __name__ == '__main__':
     print(f"res2 match index is {res2}")
 
     # worst case (all cases are O(m+n))
-    res3 = knuth_morris_pratt_str_match("aaaaaaaaaaaaaaaaaaaaaaaa", read_file("case3.txt"))
+    res3 = knuth_morris_pratt_str_match("aaaaaaaaaaaaaaaaaaaaaaab", read_file("case3.txt"))
     print(f"res3 match index is {res3}")
 
